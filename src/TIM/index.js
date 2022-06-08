@@ -98,9 +98,9 @@ tim.on(TIM.EVENT.NET_STATE_CHANGE, function (event) {
 
 
 // 开始登录 
-const res = genTestUserSig("111")
-const { userSig } = res
-tim.login({ userID: "111", userSig: userSig });
+// const res = genTestUserSig("111")
+// const { userSig } = res
+// tim.login({ userID: "111", userSig: userSig });
 
 export const _TIM = TIM
 export default tim

@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Player from '../views/Player.vue'
+import Player from '../views/player/Player.vue'
 
 const routes = [
   {
