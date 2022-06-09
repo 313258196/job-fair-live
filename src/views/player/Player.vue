@@ -11,52 +11,28 @@
         </div>
         <div class="tabs-block">
             <div class="div_H scroll-view_H">
-                <div
-                    v-for="(item, index) in tabList"
-                    :key="item.$index"
-                    class="div-item_H"
-                    @click="itemClicked(item, index)"
-                    :class="{ active: item.active }"
-                >
+                <div v-for="(item, index) in tabList" :key="item.$index" class="div-item_H"
+                    @click="itemClicked(item, index)" :class="{ active: item.active }">
                     {{ item.label }}
                 </div>
             </div>
             <div class="swiper-block">
-                <el-carousel
-                    ref="carouselRef"
-                    class="swiper"
-                    height="100%"
-                    :initial-index="0"
-                    :autoplay="false"
-                    arrow="never"
-                    indicator-position="none"
-                >
+                <el-carousel ref="carouselRef" class="swiper" height="100%" :initial-index="0" :autoplay="false"
+                    arrow="never" indicator-position="none">
                     <el-carousel-item>
                         <div class="el-carousel-item uni-bg-red">
-                            <ChatRoom
-                                :groupChatExit="groupChatExit"
-                                :chatArr="chatArr"
-                                :send="sendMsgFn"
-                                :prePageLoading="prePageLoading"
-                                :prePageFn="prePageFn"
-                            />
+                            <ChatRoom ref="chatRoomRef" :groupChatExit="groupChatExit" :chatArr="chatArr"
+                                :send="sendMsgFn" :prePageLoading="prePageLoading" :prePageFn="prePageFn"
+                                :isBottomFn="isBottom" />
                         </div>
                     </el-carousel-item>
                     <el-carousel-item>
                         <div class="el-carousel-item works">
-                            <div
-                                v-for="(item, index) in companyInfoList"
-                                :key="index"
-                                class="company-item"
-                            >
+                            <div v-for="(item, index) in companyInfoList" :key="index" class="company-item">
                                 <div class="company-title">
                                     {{ item.title }}
                                 </div>
-                                <div
-                                    v-for="(ite, idx) in item.workList"
-                                    :key="idx"
-                                    class="work-item"
-                                >
+                                <div v-for="(ite, idx) in item.workList" :key="idx" class="work-item">
                                     <div class="work-top">
                                         <div class="work-tit">
                                             {{ ite.title }}
@@ -87,24 +63,12 @@
                     <el-carousel-item>
                         <div class="el-carousel-item uni-bg-blue">
                             <!-- <web-div :webdiv-styles="webdivStyles" src="http://www.huicai.wang/m/index"></web-div> -->
-                            <iframe
-                                class="iframe"
-                                src="http://www.huicai.wang/m/index"
-                                frameborder="0"
-                            ></iframe>
+                            <iframe class="iframe" src="http://www.huicai.wang/m/index" frameborder="0"></iframe>
                         </div>
                     </el-carousel-item>
                     <el-carousel-item>
-                        <div
-                            :scroll-top="0"
-                            scroll-y="true"
-                            class="el-carousel-item direction-chat"
-                        >
-                            <div
-                                class="comp-item"
-                                v-for="(item, index) in companyInfoList"
-                                :key="index"
-                            >
+                        <div :scroll-top="0" scroll-y="true" class="el-carousel-item direction-chat">
+                            <div class="comp-item" v-for="(item, index) in companyInfoList" :key="index">
                                 <div class="company">
                                     {{ item.title }}
                                 </div>
@@ -118,43 +82,29 @@
                                 <div class="company-txt">
                                     {{ chatCompany.title }}
                                 </div>
-                                <div
-                                    class="exit-btn-block"
-                                    @click="show = false"
-                                >
+                                <div class="exit-btn-block" @click="show = false">
                                     <!-- <button class="mini-btn" type="primary" size="mini">退出聊天</button> -->
                                     <!-- <uni-icons type="forward" size="22"></uni-icons> -->
                                 </div>
                             </div>
                             <div class="chat-box-container">
-                                <div
-                                    class="chat-item"
-                                    v-for="(item, index) in chatList"
-                                    :key="index"
-                                    :id="`item${index}`"
-                                    :class="{ user: item.type === 'receive' }"
-                                >
-                                    <image
-                                        class="avatar"
-                                        mode="scaleToFill"
-                                        :src="
-                                            item.type === 'to'
-                                                ? companyAvatar
-                                                : userAvatar
-                                        "
-                                    >
+                                <div class="chat-item" v-for="(item, index) in chatList" :key="index"
+                                    :id="`item${index}`" :class="{ user: item.type === 'receive' }">
+                                    <image class="avatar" mode="scaleToFill" :src="
+                                        item.type === 'to'
+                                            ? companyAvatar
+                                            : userAvatar
+                                    ">
                                     </image>
                                     <div class="content-block">
                                         <span class="content">
-                                            <template
-                                                v-if="item.msgType === 'resume'"
-                                            >
+                                            <template v-if="item.msgType === 'resume'">
                                                 <!-- <uni-icons class="icon-resume-diy" type="wallet" size="30">
                                                 </uni-icons> -->
                                                 <div class="txt">查看简历</div>
                                             </template>
                                             <template v-else>{{
-                                                item.cont
+                                                    item.cont
                                             }}</template>
                                         </span>
                                     </div>
@@ -162,12 +112,8 @@
                             </div>
                             <form @submit="formSubmit">
                                 <div class="chat-input-box">
-                                    <input
-                                        class="uni-input"
-                                        :class="{ emptyMsg }"
-                                        placeholder=""
-                                        v-model="chatForm.message"
-                                    />
+                                    <input class="uni-input" :class="{ emptyMsg }" placeholder=""
+                                        v-model="chatForm.message" />
                                     <!-- @keyup.enter.native="formSubmit" -->
                                     <div class="uni-btn-v">
                                         <!-- <uni-transition :mode-class="['fade', 'slide-left']"
@@ -246,6 +192,8 @@ export default {
             },
         };
 
+        let chatRoomRef = ref(null);
+        let isBottom = ref(false);
         let isCompleted = ref(false);
         let nextReqMessageID = ref("");
         let tabList = ref(tl);
@@ -313,7 +261,7 @@ export default {
                         .then((response) => {
                             joinGroupFnLocal();
                         })
-                        .catch((error) => {});
+                        .catch((error) => { });
                 });
         });
 
@@ -326,6 +274,7 @@ export default {
                         text: item.payload.text,
                         self: item.from == userInfo.userID,
                     });
+                    chatRoomRef.value.scrollBottom()
                 }
             });
         });
@@ -386,6 +335,7 @@ export default {
                     text: message.payload.text,
                     self: message.from == userInfo.userID,
                 });
+                chatRoomRef.value.scrollBottom()
             });
         }
         function setTabActive(index) {
@@ -401,6 +351,8 @@ export default {
         };
 
         return {
+            chatRoomRef,
+            isBottom,
             instance,
             tabList,
             companyInfoList,
@@ -413,12 +365,12 @@ export default {
             carouselRef,
             groupChatExit,
             chatArr,
-            sendMsgFn,
-            itemClicked,
-            prePageFn,
             prePageLoading,
             isCompleted,
-            emptyMsg
+            emptyMsg,
+            sendMsgFn,
+            itemClicked,
+            prePageFn
         };
     },
 };

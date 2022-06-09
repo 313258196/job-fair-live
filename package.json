@@ -8,6 +8,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.5",
     "core-js": "^3.8.3",
     "element-plus": "^2.2.5",
     "register-service-worker": "^1.7.2",
