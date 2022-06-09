@@ -2,6 +2,7 @@ import TIM from 'tim-js-sdk';
 // 发送图片、文件等消息需要腾讯云即时通信 IM 上传插件
 import TIMUploadPlugin from 'tim-upload-plugin';
 import genTestUserSig, { SDKAPPID } from "../debug/GenerateTestUserSig"
+import { userID, groupName, groupID } from "./configs"
 
 let options = {
 	SDKAppID: SDKAPPID // 接入时需要将0替换为您的即时通信 IM 应用的 SDKAppID
@@ -16,19 +17,17 @@ tim.setLogLevel(0); // 普通级别，日志量较多，接入时建议使用
 // 注册腾讯云即时通信 IM 上传插件
 tim.registerPlugin({ 'tim-upload-plugin': TIMUploadPlugin });
 
-
-// 监听事件，例如：
-tim.on(TIM.EVENT.SDK_READY, function (event) {
+export const sdkReady = (fn) => {
+	// 监听事件，例如：
 	// 收到离线消息和会话列表同步完毕通知，接入侧可以调用 sendMessage 等需要鉴权的接口
-	// event.name - TIM.EVENT.SDK_READY
-	console.log(1111111111, "SDK_READY...")
-});
-
-tim.on(TIM.EVENT.MESSAGE_RECEIVED, function (event) {
+	tim.on(TIM.EVENT.SDK_READY, fn);
+}
+export const onMessage = (fn) => {
 	// 收到推送的单聊、群聊、群提示、群系统通知的新消息，可通过遍历 event.data 获取消息列表数据并渲染到页面
 	// event.name - TIM.EVENT.MESSAGE_RECEIVED
 	// event.data - 存储 Message 对象的数组 - [Message]
-});
+	tim.on(TIM.EVENT.MESSAGE_RECEIVED,fn);
+}
 
 tim.on(TIM.EVENT.MESSAGE_REVOKED, function (event) {
 	// 收到消息被撤回的通知
@@ -97,10 +96,100 @@ tim.on(TIM.EVENT.NET_STATE_CHANGE, function (event) {
 });
 
 
-// 开始登录 
-// const res = genTestUserSig("111")
-// const { userSig } = res
-// tim.login({ userID: "111", userSig: userSig });
+// apis 根据群 ID 搜索群组
+export const searchGroupByIDFn = (groupID) => {
+	return tim.searchGroupByID(groupID)
+}
+// apis 创建群组
+export const createGroupFn = (options) => {
+	return tim.createGroup({
+		name: groupName,
+		type: TIM.TYPES.GRP_PUBLIC,
+		groupID,
+		...options
+	})
+}
+// apis 发送消息
+export const sendMessageFn = (options) => {
+	let { text } = options
+	// 发送文本消息，Web 端与小程序端相同
+	// 1. 创建消息实例，接口返回的实例可以上屏
+	let message = tim.createTextMessage({
+		to: groupID,
+		conversationType: TIM.TYPES.CONV_GROUP,
+		// 消息优先级，用于群聊（v2.4.2起支持）。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息，详细请参考：https://cloud.tencent.com/document/product/269/3663#.E6.B6.88.E6.81.AF.E4.BC.98.E5.85.88.E7.BA.A7.E4.B8.8E.E9.A2.91.E7.8E.87.E6.8E.A7.E5.88.B6)
+		// 支持的枚举值：TIM.TYPES.MSG_PRIORITY_HIGH, TIM.TYPES.MSG_PRIORITY_NORMAL（默认）, TIM.TYPES.MSG_PRIORITY_LOW, TIM.TYPES.MSG_PRIORITY_LOWEST
+		// priority: TIM.TYPES.MSG_PRIORITY_NORMAL,
+		payload: {
+			text
+		}
+	});
+	// 2. 发送消息
+	return tim.sendMessage(message);
+}
+// apis 申请加群
+export const JoinStatus = {
+	Wait: 1,
+	Success: 2,
+	On: 3,
+}
+export const joinGroupFn = (options) => {
+	let promise = tim.joinGroup({ groupID, type: TIM.TYPES.GRP_PUBLIC });
+
+	return new Promise((resolve, reject) => {
+		promise.then(function (imResponse) {
+			switch (imResponse.data.status) {
+				case TIM.TYPES.JOIN_STATUS_WAIT_APPROVAL: // 等待管理员同意
+					resolve({
+						state: JoinStatus.Wait
+					})
+					break;
+				case TIM.TYPES.JOIN_STATUS_SUCCESS: // 加群成功
+					console.log(imResponse.data.group); // 加入的群组资料
+					resolve({
+						state: JoinStatus.Success,
+						data: imResponse.data
+					})
+					break;
+				case TIM.TYPES.JOIN_STATUS_ALREADY_IN_GROUP: // 已经在群中
+					resolve({
+						state: JoinStatus.On
+					})
+					break;
+				default:
+					break;
+			}
+		}).catch(function (imError) {
+			console.warn('joinGroup error:', imError); // 申请加群失败的相关信息
+			reject(imError)
+		});
+	})
+}
+// apis 获取我的个人资料
+export const getMyProfileFn = (profile) => {
+	tim.getMyProfile().then(res => {
+		console.log("getMyProfile...",res)
+		if(!res.data.nick){
+			tim.updateMyProfile(profile);
+		}
+	}).catch(err => {
+		console.log("getMyProfile err...",err)
+	})
+}
+// apis 获取某会话的消息列表
+export const getMessageListFn = (options) => {
+	console.log(11111111111111111111,{
+		conversationID:`GROUP${groupID}`,
+		count:10,
+		...options,
+	})
+	return tim.getMessageList({
+		conversationID:`GROUP${groupID}`,
+		count:10,
+		...options,
+	})
+}
+
 
 export const _TIM = TIM
 export default tim
