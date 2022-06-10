@@ -93,6 +93,8 @@ $gray: #EBEEF5;
                         justify-content: space-between;
                         margin: 0 0 10px;
                         align-items: center;
+                        position: relative;
+                        z-index: 10;
 
                         $btnH: 25px;
 
@@ -170,6 +172,9 @@ $gray: #EBEEF5;
                     &.direction-chat {
                         $titleH: 45px;
                         $chatSendBoxH: 45px;
+                        background-color: #f5f5f5;
+                        position: relative;
+
 
                         .transi-block {
                             display: flex;

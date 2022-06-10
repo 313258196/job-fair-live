@@ -1,0 +1,16 @@
+.chat-fixed {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background-color: #fff;
+	z-index: 20;
+	left: 100%;
+	top: 0;
+	opacity: 0;
+	transition: all ease .3s;
+
+	&.show {
+		left: 0;
+		opacity: 1;
+	}
+}

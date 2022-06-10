@@ -37,6 +37,7 @@ export const tabList = [{
 ]
 
 export const companyInfoList = [{
+    id:1,
     title: "上饶信息技术有限公司",
     welfare: "五险一金、双休",
     link: "李经历 15122223333 0478-5451254",
@@ -67,6 +68,7 @@ export const companyInfoList = [{
     },
     ]
 }, {
+    id:2,
     title: "上饶信息技术有限公司",
     welfare: "五险一金、双休",
     link: "李经历 15122223333 0478-5451254",
@@ -97,6 +99,7 @@ export const companyInfoList = [{
     },
     ]
 }, {
+    id:3,
     title: "上饶信息技术有限公司",
     welfare: "五险一金、双休",
     link: "李经历 15122223333 0478-5451254",

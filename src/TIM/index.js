@@ -26,7 +26,7 @@ export const onMessage = (fn) => {
 	// 收到推送的单聊、群聊、群提示、群系统通知的新消息，可通过遍历 event.data 获取消息列表数据并渲染到页面
 	// event.name - TIM.EVENT.MESSAGE_RECEIVED
 	// event.data - 存储 Message 对象的数组 - [Message]
-	tim.on(TIM.EVENT.MESSAGE_RECEIVED,fn);
+	tim.on(TIM.EVENT.MESSAGE_RECEIVED, fn);
 }
 
 tim.on(TIM.EVENT.MESSAGE_REVOKED, function (event) {
@@ -106,17 +106,18 @@ export const createGroupFn = (options) => {
 		name: groupName,
 		type: TIM.TYPES.GRP_PUBLIC,
 		groupID,
+		joinOption: TIM.TYPES.JOIN_OPTIONS_FREE_ACCESS,
 		...options
 	})
 }
 // apis 发送消息
 export const sendMessageFn = (options) => {
-	let { text } = options
+	let { text, toID, conversationType } = options
 	// 发送文本消息，Web 端与小程序端相同
 	// 1. 创建消息实例，接口返回的实例可以上屏
 	let message = tim.createTextMessage({
-		to: groupID,
-		conversationType: TIM.TYPES.CONV_GROUP,
+		to: toID || groupID,
+		conversationType: conversationType || TIM.TYPES.CONV_GROUP,
 		// 消息优先级，用于群聊（v2.4.2起支持）。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息，详细请参考：https://cloud.tencent.com/document/product/269/3663#.E6.B6.88.E6.81.AF.E4.BC.98.E5.85.88.E7.BA.A7.E4.B8.8E.E9.A2.91.E7.8E.87.E6.8E.A7.E5.88.B6)
 		// 支持的枚举值：TIM.TYPES.MSG_PRIORITY_HIGH, TIM.TYPES.MSG_PRIORITY_NORMAL（默认）, TIM.TYPES.MSG_PRIORITY_LOW, TIM.TYPES.MSG_PRIORITY_LOWEST
 		// priority: TIM.TYPES.MSG_PRIORITY_NORMAL,
@@ -168,24 +169,19 @@ export const joinGroupFn = (options) => {
 // apis 获取我的个人资料
 export const getMyProfileFn = (profile) => {
 	tim.getMyProfile().then(res => {
-		console.log("getMyProfile...",res)
-		if(!res.data.nick){
+		console.log("getMyProfile...", res)
+		if (!res.data.nick) {
 			tim.updateMyProfile(profile);
 		}
 	}).catch(err => {
-		console.log("getMyProfile err...",err)
+		console.log("getMyProfile err...", err)
 	})
 }
 // apis 获取某会话的消息列表
 export const getMessageListFn = (options) => {
-	console.log(11111111111111111111,{
-		conversationID:`GROUP${groupID}`,
-		count:10,
-		...options,
-	})
 	return tim.getMessageList({
-		conversationID:`GROUP${groupID}`,
-		count:10,
+		conversationID: `GROUP${groupID}`,
+		count: 15,
 		...options,
 	})
 }

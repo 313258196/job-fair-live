@@ -6,7 +6,27 @@
     flex-direction: column;
     justify-content: space-between;
 
+    .chat-title-block {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 10px;
+        box-sizing: border-box;
+        background-color: #ebeef5;
+
+        .chat-title {
+            font-size: 14px;
+            color: #333;
+            max-width: 70vw;
+            @include ellipsis();
+        }
+    }
+
     .chat-item-block {
+        width: 100%;
+        height: calc(100% - 50px);
+
         padding: 0 0 10px 0;
         box-sizing: border-box;
         max-height: calc(100% - 50px);
@@ -21,9 +41,54 @@
             display: none
         }
 
-        .chat-main-box{
+        .chat-error-block{
+            // padding: 5px 0;
+            height: 0;
+            opacity: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            @include transi($timing:ease);
+
+            &.visiable{
+                height: 30px;
+                opacity: 1;
+            }
+        }
+
+        .chat-main-box {
             overflow-anchor: auto;
 
+            .loading-block {
+                margin: 5px auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                @-webkit-keyframes animal {
+                    0% {
+                        transform: rotate(0deg);
+                        -ms-transform: rotate(0deg);
+                        -webkit-transform: rotate(0deg);
+                    }
+
+                    100% {
+                        transform: rotate(-360deg);
+                        -ms-transform: rotate(-360deg);
+                        -webkit-transform: rotate(-360deg);
+                    }
+                }
+
+                .loading {
+                    animation: animal 4s infinite linear;
+                    -webkit-animation: animal 4s infinite linear;
+                    -webkit-transform-origin: center center;
+                    -ms-transform-origin: center center;
+                    transform-origin: center center;
+                }
+
+            }
         }
 
         .tip-msg {
@@ -89,6 +154,8 @@
                     z-index: 30;
                     max-width: 60vw;
                     background-color: $bgColor;
+                    display: inline-block;
+                    vertical-align: middle;
                 }
             }
 
@@ -130,19 +197,29 @@
         .chat-send-inp-box {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            height: 50px;
-            padding: 0 10px;
+            align-items: flex-end;
+            min-height: 50px;
+            padding: 10px;
             box-sizing: border-box;
             background-color: #f7f7f7;
+
             .chat-input {
                 flex: 1;
                 border: none;
                 outline: none;
                 background-color: #fff;
-                height: 30px;
-                padding: 0 10px;
+                min-height: 30px;
+                padding: 5px 10px;
                 box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                line-height: 20px;
+                max-height: 60px;
+                // line-height: 1.4;
+                overflow-y: auto;
+                max-width: calc(100% - 100px);
+                flex-wrap: wrap;
+                word-break: break-all;
 
                 &:focus {
                     outline: none;
@@ -158,6 +235,11 @@
                 display: flex;
                 align-items: center;
 
+                .icon-smile {
+                    width: 25px;
+                    margin-right: 6px;
+                }
+
                 .el-icon-biaoq {
                     margin-right: 5px;
                 }
@@ -170,13 +252,13 @@
 
         }
 
-        .chat-emo-block{
+        .chat-emo-block {
             opacity: 0;
             visibility: hidden;
             height: 0;
             transition: all ease .3s;
 
-            &.emoBoxShow{
+            &.emoBoxShow {
                 opacity: 1;
                 visibility: visible;
                 height: 200px;

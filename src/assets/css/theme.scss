@@ -1,2 +1,25 @@
 // color
 $themeColor:#409eff;
+
+// mixins
+@mixin transi($property:all,$duration:0.2s,$timing:linear,$delay:0s) {
+	transition: $property $duration $timing $delay;
+}
+@mixin ellipsis() {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	word-break: break-all;
+}
+@mixin scroll() {
+	scrollbar-width: thin;
+	scrollbar-color: $themeColorHover #EDEDED;
+}
+@mixin hiddened() {
+	visibility: hidden;
+	opacity: 0;
+}
+@mixin visiabled() {
+	visibility: visible;
+	opacity: 1;
+}
